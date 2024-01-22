@@ -1,0 +1,22 @@
+1. When user logs in, check if id exists. If yes, continue login. Mark account as isActive=true in supabase.
+If no, create a new account and continue login.
+
+2. Create a new room. Navigate to /room/host/[roomId]
+Assign this new room to supabase db with isActive=True.
+Save this state in context in NextJs.
+[host's current room + alreadyJoined=true + display name]
+
+3. On joining the room, show a list of other logged in users. Fetch the other users active room id.
+Save this state in context - list of users - each user to have a field already connected to
+When a particular user is selected, navigate to that roomId - /room/remote/[roomId]
+
+4. When leave that room, fetch host's current room from state and navigate to /room/host/[roomId].
+Do not show the form to fill in display name if alreadyJoined=true.
+Fetch display name from context.
+Join the room directly.
+Show list of users online minus the user connected previously by using already connected to list.
+
+5. SignOut
+Event - users.isActive for current user = false | reset rooms table's rows as well
+
+
