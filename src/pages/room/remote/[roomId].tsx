@@ -14,39 +14,49 @@ import { Inter } from 'next/font/google';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 import { supabase } from '../../../utils/supabaseClient';
+import { useSession } from 'next-auth/react';
 
 const inter = Inter({ subsets: ['latin'] });
 
 type Props = {
   token: string;
-  users: any[];
 };
 
-export default function Home({ token }: Props) {
+export default function HostRoom({ token }: Props) {
   const [displayName, setDisplayName] = useState<string>('');
   const videoRef = useRef<HTMLVideoElement>(null);
   const screenRef = useRef<HTMLVideoElement>(null);
   const router = useRouter();
+  const session = useSession();
   const [isRecording, setIsRecording] = useState<boolean>(false);
+  const [hostJoined, setHostJoined] = useState<boolean>(false);
+  const { rooms, updateRooms } = useGlobalContext();
+  const isLoading = useRef(false);
 
-  const { joinRoom, state, leaveRoom } = useRoom({
+  const { joinRoom, leaveRoom, state } = useRoom({
     onJoin: (room) => {
       console.log('onJoin', room);
-      updateMetadata({ displayName });
+      updateMetadata({ displayName: 'User1' });
+      isLoading.current = false;
+      setHostJoined(true);
     },
     onPeerJoin: (peer) => {
       console.log('onPeerJoin', peer);
     },
-
-    onLeave: (room) => {
-      console.log('onLeave', room);
-      leaveRoom();
-
-      // Fetch my own room data from supabase
-      // Update status to isConnecting: false | isJoined: true | peerIsJoined: false
-      // Fetch list of all users minus the one I interacted directly with and my own user
+    onLeave: () => {
+      console.log('Successfully left the room');
+      // Put the redirection logic here
+      // setPeerIsSelected(false);
+      console.log('Inside onLeave');
+      console.log('Session:');
+      console.log(session);
+      const roomId = session.data?.user?.roomId;
+      console.log('RoomId:', roomId);
+      router.push(`/room/host/${roomId}`);
+      // window.location.reload();
     },
   });
+
   const { enableVideo, isVideoOn, stream, disableVideo } = useLocalVideo();
   const { enableAudio, disableAudio, isAudioOn } = useLocalAudio();
   const { startScreenShare, stopScreenShare, shareStream } =
@@ -54,6 +64,31 @@ export default function Home({ token }: Props) {
   const { updateMetadata } = useLocalPeer<TPeerMetadata>();
   const { peerIds } = usePeerIds();
 
+  console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+  console.log('PeerIds:', peerIds);
+  console.log('State:', state);
+  console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+  // Autmatically join room and remove the idle aspect of code
+
+  useEffect(() => {
+    const join = async () => {
+      isLoading.current = true;
+      console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+      console.log('Inside useEffect - joinRoom');
+      console.log('RoomId:', router.query.roomId);
+      console.log('State: ', state);
+      console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+      await joinRoom({
+        roomId: router.query.roomId as string,
+        token,
+      });
+    };
+    if (!isLoading.current) {
+      join();
+    }
+  }, []);
+
+  // Video Ref and Stream
   useEffect(() => {
     if (stream && videoRef.current) {
       videoRef.current.srcObject = stream;
@@ -66,16 +101,54 @@ export default function Home({ token }: Props) {
     }
   }, [shareStream]);
 
+  // Update Current room status to connectd & fetch userPool
+  useEffect(() => {
+    async function updateRoomStatus() {
+      const response = await fetch('/api/room/update/peer', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ roomId: router.query.roomId }),
+      });
+      const data = await response.json();
+      console.log('Data from updateRoomStatus', data);
+    }
+
+    // List of users where isJoined=true and everything else is false isConnecting | peerIsJoined
+    // async function fetchUsers() {
+    //   const response = await fetch('/api/users/list');
+    //   const data = await response.json();
+    //   // setUserRoomPool(data);
+    //   updateRooms(data);
+    //   console.log('Users from Supabase:', data);
+    // }
+
+    if (hostJoined) {
+      updateRoomStatus();
+      // fetchUsers();
+    }
+  }, [hostJoined]);
+
+  // const handlePeerSelect = async (peerRoomId: string) => {
+  //   console.log('Peer selected');
+
+  //   // ToDo: Get roomId of peer alongside user details - id | id, huddle_room_id - available in context/global state
+
+  //   await router.replace(`/room/remote/${peerRoomId}`);
+  //   window.location.reload();
+  // };
+
   return (
     <main
       className={`flex min-h-screen flex-col items-center p-4 ${inter.className}`}
     >
       <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
         <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          <code className="font-mono font-bold">{state}</code>
+          <code className="font-mono font-bold text-red-500">{state}</code>
         </p>
         <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          {state === 'idle' && (
+          {/* {state === 'idle' && (
             <>
               <input
                 disabled={state !== 'idle'}
@@ -100,8 +173,7 @@ export default function Home({ token }: Props) {
                 Join Room
               </button>
             </>
-          )}
-
+          )} */}
           {state === 'connected' && (
             <>
               <button
@@ -122,35 +194,13 @@ export default function Home({ token }: Props) {
               >
                 {isAudioOn ? 'Disable Audio' : 'Enable Audio'}
               </button>
-              <button
-                type="button"
-                className="bg-blue-500 p-2 mx-2 rounded-lg"
-                onClick={async () => {
-                  shareStream
-                    ? await stopScreenShare()
-                    : await startScreenShare();
-                }}
-              >
-                {shareStream ? 'Disable Screen' : 'Enable Screen'}
-              </button>
-              <button
-                type="button"
-                className="bg-blue-500 p-2 mx-2 rounded-lg"
-                onClick={async () => {
-                  const status = isRecording
-                    ? await fetch(
-                        `/api/stopRecording?roomId=${router.query.roomId}`
-                      )
-                    : await fetch(
-                        `/api/startRecording?roomId=${router.query.roomId}`
-                      );
 
-                  const data = await status.json();
-                  console.log({ data });
-                  setIsRecording(!isRecording);
-                }}
+              <button
+                type="button"
+                className="bg-blue-500 p-2 mx-2 rounded-lg"
+                onClick={leaveRoom}
               >
-                {isRecording ? 'Stop Recording' : 'Start Recording'}
+                Leave Room
               </button>
             </>
           )}
@@ -171,16 +221,6 @@ export default function Home({ token }: Props) {
                   />
                 </div>
               )}
-              {shareStream && (
-                <div className="w-1/2 mx-auto border-2 rounded-xl border-blue-400">
-                  <video
-                    ref={screenRef}
-                    className="aspect-video rounded-xl"
-                    autoPlay
-                    muted
-                  />
-                </div>
-              )}
             </div>
           </div>
 
@@ -190,9 +230,26 @@ export default function Home({ token }: Props) {
             )}
           </div>
         </div>
-        {state === 'connected' && <ChatBox />}
+        {/* {state === 'connected' && <ChatBox />} */}
       </div>
       {/* <UserProfile /> */}
+      {/* <div>List of Online Users</div>
+      {rooms.map((user) => (
+        <div className="m-5 flex flex-row font-urbanist" key={user.id}>
+          <div className="bg-blue-500 px-10 py-10 text-white">
+            {user.fc_username}
+          </div>
+          <Image
+            className="hover:pointer"
+            src={user.fc_image_url ?? ''}
+            width={100}
+            height={100}
+            alt="Profile Pic of FC"
+            onClick={() => handlePeerSelect(user.huddle_room_id)}
+          />
+        </div>
+      ))} */}
+
       <button
         className="px-10 py-5  bg-black text-blue-400"
         onClick={() => signOut()}
@@ -204,11 +261,24 @@ export default function Home({ token }: Props) {
 }
 
 import { GetServerSidePropsContext } from 'next';
-import UserProfile from '../../../components/UserProfile';
 import { signOut } from 'next-auth/react';
 import { set } from '@project-serum/anchor/dist/cjs/utils/features';
+import Image from 'next/image';
+import { getSession } from 'next-auth/react';
+import { useGlobalContext } from '@/src/context/GlobalContext';
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  // session
+  const session = await getSession(ctx);
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/signin',
+        permanent: false,
+      },
+    };
+  }
+
   const accessToken = new AccessToken({
     apiKey: process.env.HUDDLE_API_KEY || '',
     roomId: ctx.params?.roomId?.toString() || '',
@@ -227,15 +297,17 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
       canUpdateMetadata: true,
     },
   });
-
   const token = await accessToken.toJwt();
-  // Save the token for peer roomId in local storage
-  // localStorage.setItem('token', token);
-
-  // Update host's own room status to isConnecting: false | isJoined: false | peerIsJoined: false
-  // Update the peer's (second user's) room status to isConnecting: false | isJoined: true | peerIsJoined: true | peer_sc_id: sc_user_id_of_first user
+  console.log('HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH');
+  console.log('HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH');
+  console.log('Inside room/host/${roomId}.tsx');
+  // console.log('Token:', token);
+  console.log('HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH');
+  console.log('HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH');
 
   return {
     props: { token },
   };
 };
+
+// UseEffect runs twice - isLoading ensures it is called once

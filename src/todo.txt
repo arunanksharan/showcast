@@ -20,3 +20,38 @@ Show list of users online minus the user connected previously by using already c
 Event - users.isActive for current user = false | reset rooms table's rows as well
 
 
+Sample User, JWT, Session
+
+User:  {
+  fc_id: '224616',
+  id: null,
+  name: 'arunank',
+  image: 'https://i.imgur.com/MMcWBHV.jpg'
+}
+
+Token: {
+  name: 'arunank',
+  picture: 'https://i.imgur.com/MMcWBHV.jpg',
+  sub: '224616',
+  iat: 1705921438,
+  exp: 1708513438,
+  jti: 'ee9fd8cc-687e-4107-90b4-644a09af13cc'
+}
+
+Session: {
+  user: {
+    name: 'arunank',
+    email: undefined,
+    image: 'https://i.imgur.com/MMcWBHV.jpg'
+  },
+  expires: '2024-02-21T15:26:30.767Z'
+}
+
+// Fetch flitered userPool isnide getServerProps in room/host/$roomId - done
+// Define type for userPool - done
+// Create a global state to save userPool
+// Create a global state to save already paired users
+// Create a global state to save user's metadata - eg: displayname after their first joining
+// Navigate on leave room back to /room/host/baseRoomId from Session
+// Log Out - reset database flags
+

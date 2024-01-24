@@ -10,10 +10,7 @@ import {
 const huddleRoomCreatExternalURL = '/create-room';
 
 export const createHuddleRoomExternal = async () => {
-  const response = await axios(
-    postRequest(huddleRoomCreatExternalURL, {}, process.env.HUDDLE_API_KEY)
-  );
-  return response.data;
+  return {};
 };
 
 // const response = await fetch(

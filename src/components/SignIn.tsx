@@ -13,7 +13,7 @@ function SignIn() {
   useEffect(() => {
     if (status === 'authenticated' && !isSignInComplete) {
       setIsSignInComplete(true); // Mark sign-in as complete
-      router.replace('/room');
+      router.replace('/room/host');
     }
   }, [status, isSignInComplete, router]);
 
@@ -40,7 +40,8 @@ function SignIn() {
           console.log('Sign in successful');
           console.log(JSON.stringify(result));
           setIsSignInComplete(true); // Mark sign-in as complete
-          router.replace('/room'); // Use Next.js router for redirection
+
+          router.replace(`/room/host`); // Use Next.js router for redirection
         }
       }
     },
