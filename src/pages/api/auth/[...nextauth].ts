@@ -1,8 +1,7 @@
-import NextAuth from 'next-auth';
-import CredentialsProvider from 'next-auth/providers/credentials';
 import { createAppClient, viemConnector } from '@farcaster/auth-client';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getCsrfToken } from 'next-auth/react';
+import NextAuth, { NextAuthOptions } from 'next-auth';
+import CredentialsProvider from 'next-auth/providers/credentials';
 import { supabase } from '../../../utils/supabaseClient';
 
 // export const authHandler = (req: NextApiRequest, res: NextApiResponse) =>
@@ -252,9 +251,10 @@ import { supabase } from '../../../utils/supabaseClient';
 
 export const authHandler = (req: NextApiRequest, res: NextApiResponse) =>
   NextAuth(req, res, authOptions);
+
 export default authHandler;
 
-export const authOptions = {
+export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: 'jwt',
