@@ -1,0 +1,67 @@
+1. When user logs in, check if id exists. If yes, continue login. Mark account as isActive=true in supabase.
+If no, create a new account and continue login.
+
+2. Create a new room. Navigate to /room/host/[roomId]
+Assign this new room to supabase db with isActive=True.
+Save this state in context in NextJs.
+[host's current room + alreadyJoined=true + display name]
+
+3. On joining the room, show a list of other logged in users. Fetch the other users active room id.
+Save this state in context - list of users - each user to have a field already connected to
+When a particular user is selected, navigate to that roomId - /room/remote/[roomId]
+
+4. When leave that room, fetch host's current room from state and navigate to /room/host/[roomId].
+Do not show the form to fill in display name if alreadyJoined=true.
+Fetch display name from context.
+Join the room directly.
+Show list of users online minus the user connected previously by using already connected to list.
+
+5. SignOut
+Event - users.isActive for current user = false | reset rooms table's rows as well
+
+
+Sample User, JWT, Session
+
+User:  {
+  fc_id: '224616',
+  id: null,
+  name: 'arunank',
+  image: 'https://i.imgur.com/MMcWBHV.jpg'
+}
+
+Token: {
+  name: 'arunank',
+  picture: 'https://i.imgur.com/MMcWBHV.jpg',
+  sub: '224616',
+  iat: 1705921438,
+  exp: 1708513438,
+  jti: 'ee9fd8cc-687e-4107-90b4-644a09af13cc'
+}
+
+Session: {
+  user: {
+    name: 'arunank',
+    email: undefined,
+    image: 'https://i.imgur.com/MMcWBHV.jpg'
+  },
+  expires: '2024-02-21T15:26:30.767Z'
+}
+
+// Fetch flitered userPool isnide getServerProps in room/host/$roomId - done
+// Define type for userPool - done
+// Create a global state to save userPool
+// Create a global state to save already paired users
+// Create a global state to save user's metadata - eg: displayname after their first joining
+// Navigate on leave room back to /room/host/baseRoomId from Session
+// Log Out - reset database flags
+
+
+
+
+// When user lands, check if any room with host=true, peer=false
+// If yes, join that room
+// else the users initialises a room and sits on it till another user comes
+
+// Exclusion algorithm
+- time
+- frequency

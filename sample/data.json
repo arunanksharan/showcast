@@ -1,0 +1,69 @@
+[
+  {
+    "fc_image_url": "https://i.imgur.com/MMcWBHV.jpg",
+    "id": "5c9fb52e-b4b7-4a8a-8735-123107ef5730",
+    "fc_username": "arunank",
+    "fc_id": "224616",
+    "rooms": [
+      {
+        "user_id": "5c9fb52e-b4b7-4a8a-8735-123107ef5730",
+        "host_is_joined": true
+      },
+      {
+        "user_id": "5c9fb52e-b4b7-4a8a-8735-123107ef5730",
+        "host_is_joined": true
+      },
+      {
+        "user_id": "5c9fb52e-b4b7-4a8a-8735-123107ef5730",
+        "host_is_joined": true
+      },
+      {
+        "user_id": "5c9fb52e-b4b7-4a8a-8735-123107ef5730",
+        "host_is_joined": true
+      },
+      {
+        "user_id": "5c9fb52e-b4b7-4a8a-8735-123107ef5730",
+        "host_is_joined": true
+      },
+      {
+        "user_id": "5c9fb52e-b4b7-4a8a-8735-123107ef5730",
+        "host_is_joined": true
+      },
+      {
+        "user_id": "5c9fb52e-b4b7-4a8a-8735-123107ef5730",
+        "host_is_joined": true
+      },
+      {
+        "user_id": "5c9fb52e-b4b7-4a8a-8735-123107ef5730",
+        "host_is_joined": true
+      },
+      {
+        "user_id": "5c9fb52e-b4b7-4a8a-8735-123107ef5730",
+        "host_is_joined": true
+      },
+      {
+        "user_id": "5c9fb52e-b4b7-4a8a-8735-123107ef5730",
+        "host_is_joined": true
+      }
+    ]
+  },
+  {
+    "fc_image_url": "https://i.imgur.com/ICvcPmC.jpg",
+    "id": "3ea21f5b-bc49-4d24-be17-3f6387450a44",
+    "fc_username": "saxenasaheb",
+    "fc_id": "4753",
+    "rooms": [
+      {
+        "user_id": "3ea21f5b-bc49-4d24-be17-3f6387450a44",
+        "host_is_joined": true
+      }
+    ]
+  },
+  {
+    "fc_image_url": "https://i.imgur.com/k8qErJ8.gif",
+    "id": "341095d0-25e8-470a-bac6-11382af930d2",
+    "fc_username": "pratyushrungta",
+    "fc_id": "1350",
+    "rooms": []
+  }
+]
