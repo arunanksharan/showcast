@@ -367,7 +367,8 @@ export const authOptions: NextAuthOptions = {
                   is_active: true,
                   session_huddle_room_id: roomId,
                 },
-              ]);
+              ])
+              .select();
             console.log('xxxxxxxxxx No Existing User Found - Start xxxxxxxxxx');
             console.log(
               'xxxxxxxxxx No Existing User Found - Inserting new user xx'
@@ -392,7 +393,8 @@ export const authOptions: NextAuthOptions = {
             const { data: updatedUser, error } = await supabase
               .from('users')
               .update({ is_active: true, session_huddle_room_id: roomId })
-              .eq('fc_id', fc_id);
+              .eq('fc_id', fc_id)
+              .select();
             console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
             console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
             console.log('xxxxxxxxxx Updated Existing User xxxxxxx');
@@ -415,7 +417,8 @@ export const authOptions: NextAuthOptions = {
                 host_is_joined: false,
                 peer_is_joined: false,
               },
-            ]);
+            ])
+            .select();
           console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
           console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
           console.log('xxxxxxxxxx Updated Rooms Table User xxxxxxx');
@@ -490,6 +493,62 @@ export const authOptions: NextAuthOptions = {
           roomId: token.roomId,
         },
       };
+    },
+  },
+  events: {
+    signOut: async (message) => {
+      // message has a `session` property
+      console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+      console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+      console.log('xxxxxxxxxx Sign Out Event xxxxxxx');
+      console.log('Message:', message);
+      console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+      console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+
+      // Update the user's status to inactive
+      const markUserAsInactive = async (userId: string) => {
+        const { data: updatedUser, error } = await supabase
+          .from('users')
+          .update({ is_active: false, session_huddle_room_id: null })
+          .eq('id', userId)
+          .select();
+
+        console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+        console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+        console.log('xxxxxxxxxx Updated User Status xxxxxxx');
+        console.log('Updated User:', updatedUser);
+        console.log('Error:', error);
+        console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+        console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+      };
+
+      const markRoomAsInactive = async (roomId: string) => {
+        const { data: updatedRoom, error } = await supabase
+          .from('rooms')
+          .update({
+            host_is_connecting: false,
+            host_is_joined: false,
+            peer_is_joined: false,
+          })
+          .eq('huddle_room_id', roomId)
+          .select();
+
+        console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+        console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+        console.log('xxxxxxxxxx Updated Room Status xxxxxxx');
+        console.log('Updated Room:', updatedRoom);
+        console.log('Error:', error);
+        console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+        console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+      };
+      if (message.session) {
+        await markUserAsInactive(message.session.user.id);
+        await markRoomAsInactive(message.session.user.roomId);
+      }
+      if (message.token) {
+        await markUserAsInactive(message.token.id);
+        await markRoomAsInactive(message.token.roomId);
+      }
     },
   },
 };

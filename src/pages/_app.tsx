@@ -5,6 +5,7 @@ import { AuthKitProvider } from '@farcaster/auth-kit';
 import { SessionProvider } from 'next-auth/react';
 import { useState, createContext } from 'react';
 import { GlobalContextProvider } from '../context/GlobalContext';
+import { signOut } from 'next-auth/react';
 
 const config = {
   // For a production app, replace this with an Optimism Mainnet
@@ -41,6 +42,15 @@ export default function App({
       <SessionProvider session={session}>
         <HuddleProvider client={huddleClient}>
           <AuthKitProvider config={config}>
+            {session && (
+              <button
+                onClick={() =>
+                  signOut({ callbackUrl: 'http://localhost:3000/' })
+                }
+              >
+                Sign Out
+              </button>
+            )}
             <Component {...pageProps} />
           </AuthKitProvider>
         </HuddleProvider>

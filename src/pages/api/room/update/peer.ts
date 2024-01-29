@@ -12,13 +12,13 @@ export default async function handler(
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const session = await getServerSession({ req });
+  //   const session = await getServerSession({ req });
 
-  console.log('Inside update peer');
-  console.log(session);
-  if (!session) {
-    return res.status(401).json({ message: 'Unauthorized' });
-  }
+  //   console.log('Inside update peer');
+  //   console.log(session);
+  //   if (!session) {
+  //     return res.status(401).json({ message: 'Unauthorized' });
+  //   }
 
   const roomId = req.body.roomId;
   if (!roomId) {
@@ -30,12 +30,13 @@ export default async function handler(
     console.log('Inside update room');
 
     // Update the room status in Supabase
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('rooms')
       .update({
         peer_is_joined: true,
       })
-      .match({ huddle_room_id: roomId });
+      .eq('huddle_room_id', roomId)
+      .select();
 
     // Handle possible errors from Supabase
     if (error) {

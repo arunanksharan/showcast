@@ -15,52 +15,56 @@ import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 import { supabase } from '../../../utils/supabaseClient';
 import { useSession } from 'next-auth/react';
-
+import { GetServerSidePropsContext } from 'next';
+import { signOut } from 'next-auth/react';
+import { set } from '@project-serum/anchor/dist/cjs/utils/features';
+import Image from 'next/image';
+import { getSession } from 'next-auth/react';
+import { useGlobalContext } from '@/src/context/GlobalContext';
 const inter = Inter({ subsets: ['latin'] });
 
 type Props = {
   token: string;
 };
 
-export default function HostRoom({ token }: Props) {
+export default function HostRoom() {
   const [displayName, setDisplayName] = useState<string>('');
   const videoRef = useRef<HTMLVideoElement>(null);
   const screenRef = useRef<HTMLVideoElement>(null);
   const router = useRouter();
   const session = useSession();
   const [isRecording, setIsRecording] = useState<boolean>(false);
-  const [hostJoined, setHostJoined] = useState<boolean>(false);
+  const [joinedAsHost, setJoinedAsHost] = useState<boolean>(false);
+  const [joinedAsPeer, setJoinedAsPeer] = useState<boolean>(false);
+  const [peerJoined, setPeerJoined] = useState<boolean>(false);
   const { rooms, updateRooms } = useGlobalContext();
-  const isLoading = useRef(false);
+  // const isLoading = useRef(false);
+  // const [selectedPeerRoomId, setSelectedPeerRoomId] = useState<string>('');
 
-  const { joinRoom, state } = useRoom({
+  const { joinRoom, leaveRoom, state } = useRoom({
     onJoin: async (room) => {
       console.log('onJoin', room);
       updateMetadata({ displayName: 'User1' });
-      isLoading.current = false;
-      setHostJoined(true);
-      await updateRoomStatus();
-      await fetchUsers();
+      // isLoading.current = false;
+      setJoinedAsHost(true);
     },
     onPeerJoin: (peer) => {
       console.log('onPeerJoin', peer);
+      // Update database to reflect peer joining
+      setPeerJoined(true);
     },
-    // onLeave: () => {
-    //   console.log('Successfully left the room');
-    //   // Put the redirection logic here
-    //   // setPeerIsSelected(false);
-    //   const roomId = session.user?.roomId;
-    //   router.replace(`/room/host/${roomId}`);
-    //   // window.location.reload();
-    // },
+    onLeave: async () => {
+      console.log('Successfully left the room');
+    },
   });
 
-  async function updateRoomStatus() {
+  async function updateRoomStatus(isJoin: boolean) {
     const roomId = session.data?.user?.roomId;
     console.log('RoomId from updateRoomStatus', roomId);
+
     const response = await fetch('/api/room/update', {
       method: 'POST',
-      body: JSON.stringify({ roomId }),
+      body: JSON.stringify({ roomId, isJoin }),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -85,56 +89,53 @@ export default function HostRoom({ token }: Props) {
   const { peerIds } = usePeerIds();
   // const [peerIsSelected, setPeerIsSelected] = useState<boolean>(false);
 
-  console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
-  console.log('PeerIds:', peerIds);
-  console.log('State:', state);
-  console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
   // Autmatically join room and remove the idle aspect of code
+  const roomId = router.query.roomId as string;
+  console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+  console.log('96 PeerIds:', peerIds);
+  console.log('97 State:', state);
+  console.log('98 RoomId:', roomId);
+  console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
 
+  // Every time roomId changes, join the room
   useEffect(() => {
     const join = async () => {
-      isLoading.current = true;
+      // isLoading.current = true;
       console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
-      console.log('Inside useEffect - joinRoom');
-      console.log('RoomId:', router.query.roomId);
-      console.log('State: ', state);
+      console.log('Inside useEffect - joinRoom - first time');
+      console.log('107 RoomId:', roomId);
+      console.log('108 State: ', state);
       console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
-      await joinRoom({
-        roomId: router.query.roomId as string,
-        token,
+
+      // Get Access Token for the room
+      console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+      console.log('113 Inside useEffect - getAccessToken');
+      const response = await fetch('/api/room/getAccessToken', {
+        method: 'POST',
+        body: JSON.stringify({ roomId }),
+        headers: {
+          'Content-Type': 'application/json',
+          'Cache-Control': 'no-cache',
+        },
       });
+      const data = await response.json();
+      console.log('122 Data from getAccessToken', data);
+      console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+      console.log('124 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+      //   const token = await data.token;
+
+      await joinRoom({
+        roomId,
+        token: data.token,
+      });
+      await updateRoomStatus(true);
+      await fetchUsers();
     };
-    if (!isLoading.current) {
-      join();
-    }
-  }, []);
-
-  // useEffect(() => {
-  //   async function updateRoomStatus() {
-  //     const response = await fetch('/api/room/update', {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //     });
-  //     const data = await response.json();
-  //     console.log('Data from updateRoomStatus', data);
-  //   }
-
-  //   // List of users where isJoined=true and everything else is false isConnecting | peerIsJoined
-  //   async function fetchUsers() {
-  //     const response = await fetch('/api/users/list');
-  //     const data = await response.json();
-  //     // setUserRoomPool(data);
-  //     updateRooms(data);
-  //     console.log('Users from Supabase:', data);
-  //   }
-
-  //   if (hostJoined) {
-  //     updateRoomStatus();
-  //     fetchUsers();
-  //   }
-  // }, [hostJoined]);
+    join();
+    // if (!isLoading.current) {
+    //   join();
+    // }
+  }, [roomId]);
 
   // Video Ref and Stream
   useEffect(() => {
@@ -154,11 +155,24 @@ export default function HostRoom({ token }: Props) {
   const handlePeerSelect = async (peerRoomId: string) => {
     console.log('Peer selected');
     // setPeerIsSelected(true);
+    // setSelectedPeerRoomId(peerRoomId);
 
-    // ToDo: Get roomId of peer alongside user details - id | id, huddle_room_id - available in context/global state
+    // Leave this room
+    await leaveRoom();
+    // Update database to reflect peer joining
+    await updateRoomStatus(false);
+    await router.push(`/room/host/${peerRoomId}`);
+    // Join peer room using peerRoomId
+    // host_is_connecting + host_is_joined = false + peer_is_joined = false
+    // set state - host&peerjoined room => use this to reset userList
+  };
 
-    await router.push(`/room/remote/${peerRoomId}`);
-    window.location.reload();
+  const handleLeaveRoom = async () => {
+    await leaveRoom();
+    await updateRoomStatus(false);
+    const roomId = session.data?.user?.roomId;
+
+    await router.push(`/room/host/${roomId}`);
   };
 
   return (
@@ -170,32 +184,6 @@ export default function HostRoom({ token }: Props) {
           <code className="font-mono font-bold text-red-500">{state}</code>
         </p>
         <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          {/* {state === 'idle' && (
-            <>
-              <input
-                disabled={state !== 'idle'}
-                placeholder="Display Name"
-                type="text"
-                className="border-2 border-blue-400 rounded-lg p-2 mx-2 bg-black text-white"
-                value={displayName}
-                onChange={(event) => setDisplayName(event.target.value)}
-              />
-
-              <button
-                disabled={!displayName}
-                type="button"
-                className="bg-blue-500 p-2 mx-2 rounded-lg"
-                onClick={async () => {
-                  await joinRoom({
-                    roomId: router.query.roomId as string,
-                    token,
-                  });
-                }}
-              >
-                Join Room
-              </button>
-            </>
-          )} */}
           {state === 'connected' && (
             <>
               <button
@@ -217,13 +205,13 @@ export default function HostRoom({ token }: Props) {
                 {isAudioOn ? 'Disable Audio' : 'Enable Audio'}
               </button>
 
-              {/* <button
+              <button
                 type="button"
                 className="bg-blue-500 p-2 mx-2 rounded-lg"
-                onClick={leaveRoom}
+                onClick={handleLeaveRoom}
               >
                 Leave Room
-              </button> */}
+              </button>
             </>
           )}
         </div>
@@ -256,80 +244,33 @@ export default function HostRoom({ token }: Props) {
       </div>
       {/* <UserProfile /> */}
       <div>List of Online Users</div>
-      {rooms.map((user) => (
-        <div className="m-5 flex flex-row font-urbanist" key={user.id}>
-          <div className="bg-blue-500 px-10 py-10 text-white">
-            {user.fc_username}
+      {!peerJoined &&
+        rooms.map((user) => (
+          <div className="m-5 flex flex-row font-urbanist" key={user.id}>
+            <div className="bg-blue-500 px-10 py-10 text-white">
+              {user.fc_username}
+            </div>
+            <img
+              className="hover:pointer"
+              src={user.fc_image_url ?? ''}
+              width={100}
+              height={100}
+              alt="Profile Pic of FC"
+              onClick={() => handlePeerSelect(user.huddle_room_id)}
+            />
           </div>
-          <Image
-            className="hover:pointer"
-            src={user.fc_image_url ?? ''}
-            width={100}
-            height={100}
-            alt="Profile Pic of FC"
-            onClick={() => handlePeerSelect(user.huddle_room_id)}
-          />
-        </div>
-      ))}
+        ))}
 
-      <button
-        className="px-10 py-5  bg-black text-blue-400"
-        onClick={() => signOut()}
-      >
-        Click here to sign out
-      </button>
+      {session && (
+        <button
+          className="px-10 py-5  bg-black text-blue-400"
+          onClick={() => signOut({ callbackUrl: 'http://localhost:3000/' })}
+        >
+          Click here to sign out
+        </button>
+      )}
     </main>
   );
 }
-
-import { GetServerSidePropsContext } from 'next';
-import { signOut } from 'next-auth/react';
-import { set } from '@project-serum/anchor/dist/cjs/utils/features';
-import Image from 'next/image';
-import { getSession } from 'next-auth/react';
-import { useGlobalContext } from '@/src/context/GlobalContext';
-
-export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  // session
-  const session = await getSession(ctx);
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/signin',
-        permanent: false,
-      },
-    };
-  }
-
-  const accessToken = new AccessToken({
-    apiKey: process.env.HUDDLE_API_KEY || '',
-    roomId: ctx.params?.roomId?.toString() || '',
-    role: Role.HOST,
-    permissions: {
-      admin: true,
-      canConsume: true,
-      canProduce: true,
-      canProduceSources: {
-        cam: true,
-        mic: true,
-        screen: true,
-      },
-      canRecvData: true,
-      canSendData: true,
-      canUpdateMetadata: true,
-    },
-  });
-  const token = await accessToken.toJwt();
-  console.log('HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH');
-  console.log('HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH');
-  console.log('Inside room/host/${roomId}.tsx');
-  // console.log('Token:', token);
-  console.log('HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH');
-  console.log('HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH');
-
-  return {
-    props: { token },
-  };
-};
 
 // UseEffect runs twice - isLoading ensures it is called once

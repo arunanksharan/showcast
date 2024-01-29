@@ -11,36 +11,64 @@ export default async function handler(
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
-  const session = await getServerSession(req, res, authOptions);
+  // const session = await getServerSession(req, res, authOptions);
   console.log('line 23 Inside update host');
   console.log(req.body);
 
   const roomId = req.body.roomId;
+  const isJoin = req.body.isJoin;
   console.log('27 Inside update host roomId:', roomId);
   if (!roomId) {
     return res.status(400).json({ message: 'Room ID not found in session' });
   }
 
   try {
-    // Update the room status in Supabase
+    // Update the room status in Supabase for isJoin = true
     console.log('line 45 Inside updateRoomStatus', roomId);
-    const { error } = await supabase
-      .from('rooms')
-      .update({
-        host_is_joined: true,
-        host_is_connecting: false,
-        peer_is_joined: false,
-      })
-      .eq('huddle_room_id', roomId);
+    if (isJoin) {
+      const { error } = await supabase
+        .from('rooms')
+        .update({
+          host_is_joined: true,
+          host_is_connecting: false,
+          peer_is_joined: false,
+        })
+        .eq('huddle_room_id', roomId)
+        .select();
 
-    console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
-    console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
-    console.log('xxxxxxxxxx Update Room Status xxxxxxx');
-    console.log('Error:', error);
-    console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+      console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+      console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+      console.log('xxxxxxxxxx Update Room Status xxxxxxx');
+      console.log('Error:', error);
+      console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
 
-    // Return the updated room data
-    return res.status(200).json({ message: 'Room status updated' });
+      // Return the updated room data
+      return res
+        .status(200)
+        .json({ message: 'Room status after joining room updated' });
+    } else {
+      // Update the room status in Supabase for isJoin = false
+      const { error } = await supabase
+        .from('rooms')
+        .update({
+          host_is_joined: false,
+          host_is_connecting: false,
+          peer_is_joined: false,
+        })
+        .eq('huddle_room_id', roomId)
+        .select();
+
+      console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+      console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+      console.log('xxxxxxxxxx Update Room Status xxxxxxx');
+      console.log('Error:', error);
+      console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+
+      // Return the updated room data
+      return res
+        .status(200)
+        .json({ message: 'Room status after leaving room updated' });
+    }
   } catch (error: unknown) {
     // Handle any other errors
     console.log('Error:', error);

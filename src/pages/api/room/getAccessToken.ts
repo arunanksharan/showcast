@@ -6,14 +6,14 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { roomId } = req.query;
+  const roomId = req.body.roomId;
 
   if (!roomId) {
     return res.status(400).json({ error: 'roomId is required' });
   }
 
   const accessToken = new AccessToken({
-    apiKey: process.env.API_KEY!,
+    apiKey: process.env.HUDDLE_API_KEY!,
     roomId: roomId as string,
     role: Role.HOST,
     permissions: {

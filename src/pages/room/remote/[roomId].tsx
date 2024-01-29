@@ -34,28 +34,33 @@ export default function HostRoom({ token }: Props) {
   const isLoading = useRef(false);
 
   const { joinRoom, leaveRoom, state } = useRoom({
-    onJoin: (room) => {
+    onJoin: async (room) => {
       console.log('onJoin', room);
       updateMetadata({ displayName: 'User1' });
       isLoading.current = false;
-      setHostJoined(true);
+      // setHostJoined(true);
+      await updateRoomStatus();
     },
     onPeerJoin: (peer) => {
       console.log('onPeerJoin', peer);
     },
     onLeave: () => {
       console.log('Successfully left the room');
-      // Put the redirection logic here
-      // setPeerIsSelected(false);
       console.log('Inside onLeave');
-      console.log('Session:');
-      console.log(session);
-      const roomId = session.data?.user?.roomId;
-      console.log('RoomId:', roomId);
-      router.push(`/room/host/${roomId}`);
-      // window.location.reload();
     },
   });
+
+  async function updateRoomStatus() {
+    const response = await fetch('/api/room/update/peer', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ roomId: router.query.roomId }),
+    });
+    const data = await response.json();
+    console.log('Data from updateRoomStatus', data);
+  }
 
   const { enableVideo, isVideoOn, stream, disableVideo } = useLocalVideo();
   const { enableAudio, disableAudio, isAudioOn } = useLocalAudio();
@@ -102,42 +107,15 @@ export default function HostRoom({ token }: Props) {
   }, [shareStream]);
 
   // Update Current room status to connectd & fetch userPool
-  useEffect(() => {
-    async function updateRoomStatus() {
-      const response = await fetch('/api/room/update/peer', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ roomId: router.query.roomId }),
-      });
-      const data = await response.json();
-      console.log('Data from updateRoomStatus', data);
-    }
 
-    // List of users where isJoined=true and everything else is false isConnecting | peerIsJoined
-    // async function fetchUsers() {
-    //   const response = await fetch('/api/users/list');
-    //   const data = await response.json();
-    //   // setUserRoomPool(data);
-    //   updateRooms(data);
-    //   console.log('Users from Supabase:', data);
-    // }
-
-    if (hostJoined) {
-      updateRoomStatus();
-      // fetchUsers();
-    }
-  }, [hostJoined]);
-
-  // const handlePeerSelect = async (peerRoomId: string) => {
-  //   console.log('Peer selected');
-
-  //   // ToDo: Get roomId of peer alongside user details - id | id, huddle_room_id - available in context/global state
-
-  //   await router.replace(`/room/remote/${peerRoomId}`);
-  //   window.location.reload();
-  // };
+  const handleLeaveRoom = async () => {
+    await leaveRoom();
+    console.log('Session:');
+    console.log(session);
+    const roomId = session.data?.user?.roomId;
+    console.log('RoomId:', roomId);
+    router.push(`/room/host/${roomId}`);
+  };
 
   return (
     <main
@@ -148,32 +126,6 @@ export default function HostRoom({ token }: Props) {
           <code className="font-mono font-bold text-red-500">{state}</code>
         </p>
         <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          {/* {state === 'idle' && (
-            <>
-              <input
-                disabled={state !== 'idle'}
-                placeholder="Display Name"
-                type="text"
-                className="border-2 border-blue-400 rounded-lg p-2 mx-2 bg-black text-white"
-                value={displayName}
-                onChange={(event) => setDisplayName(event.target.value)}
-              />
-
-              <button
-                disabled={!displayName}
-                type="button"
-                className="bg-blue-500 p-2 mx-2 rounded-lg"
-                onClick={async () => {
-                  await joinRoom({
-                    roomId: router.query.roomId as string,
-                    token,
-                  });
-                }}
-              >
-                Join Room
-              </button>
-            </>
-          )} */}
           {state === 'connected' && (
             <>
               <button
@@ -298,12 +250,12 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     },
   });
   const token = await accessToken.toJwt();
-  console.log('HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH');
+  // console.log('HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH');
   console.log('HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH');
   console.log('Inside room/host/${roomId}.tsx');
   // console.log('Token:', token);
   console.log('HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH');
-  console.log('HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH');
+  // console.log('HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH');
 
   return {
     props: { token },
