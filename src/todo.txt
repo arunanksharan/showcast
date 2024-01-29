@@ -55,3 +55,13 @@ Session: {
 // Navigate on leave room back to /room/host/baseRoomId from Session
 // Log Out - reset database flags
 
+
+
+
+// When user lands, check if any room with host=true, peer=false
+// If yes, join that room
+// else the users initialises a room and sits on it till another user comes
+
+// Exclusion algorithm
+- time
+- frequency

@@ -14,9 +14,16 @@ module.exports = {
         'back-brown': '#2A2929',
         'start-border': '#191919',
         'start-bg': '#FFD12C',
+        'hero-bg': '#855DCD',
+        'signin-content-bg': '#F3F3F4',
       },
       fontFamily: {
         urbanist: ['Urbanist', 'sans-serif'],
+        mona: ['"Mona Sans Condensed"', 'sans-serif'],
+        manrope: ['Manrope', 'sans-serif'],
+      },
+      lineHeight: {
+        custom: '86.40px',
       },
     },
   },

@@ -105,7 +105,7 @@ const RemotePeer = ({ peerId }: Props) => {
           ref={screenVideoRef}
           autoPlay
           muted
-          className="border-2 rounded-xl border-white-400 aspect-video"
+          className="border-2 rounded-xl border-white-400 aspect-video w-full"
         />
       )}
       <audio ref={audioRef} autoPlay></audio>
