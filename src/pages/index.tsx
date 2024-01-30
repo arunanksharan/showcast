@@ -2,13 +2,13 @@
 import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import styles from "../../styles/Hero.module.css"
+import styles from "../../styles/Common.module.css"
 
 export default function Home() {
   const router = useRouter();
 
   const handleStartClick = () => {
-    router.push('/signin');
+    router.push('/signIn');
   };
   return (
     <>
