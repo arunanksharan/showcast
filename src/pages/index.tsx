@@ -2,6 +2,7 @@
 import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
+import styles from "../../styles/Hero.module.css"
 
 export default function Home() {
   const router = useRouter();
@@ -29,17 +30,17 @@ export default function Home() {
               height={41}
               className="mb-20"
             />
-            <div className="text-8xl mt-10 font-mona font-black leading-custom uppercase">
+            <div className={`text-6xl mt-10 font-mona font-black uppercase text-center ${styles.heroTitle}`}>
               EVERY FACE IS<br></br>A NEW STORY
             </div>
-            <div className="text-xl mt-10 font-manrope text-center">
+            <div className="text-xl mt-10 font-manrope text-center font-medium">
               Experience the Joy of One-on-One
               <br />
               Conversations with Strangers.
             </div>
 
             <div
-              className="bg-transparent border-1 border-solid border-white text-white font-manrope py-2 px-8 rounded-full flex items-center justify-center hover:bg-white hover:text-purple-700 transition-all mt-20"
+              className="bg-transparent border-0.5 border-solid border-white text-white font-manrope py-2 px-8 rounded-full flex items-center justify-center hover:bg-white hover:text-purple-700 transition-all mt-20 cursor-pointer"
               onClick={handleStartClick}
             >
               Start Your Story Now
