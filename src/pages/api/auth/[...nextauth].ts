@@ -44,9 +44,7 @@ export const authOptions: NextAuthOptions = {
         },
       },
       async authorize(credentials, req) {
-        const {
-          body: { csrfToken },
-        } = req;
+       const csrfToken = req.body?.csrfToken;
 
         const appClient = createAppClient({
           ethereum: viemConnector(),
@@ -101,7 +99,7 @@ export const authOptions: NextAuthOptions = {
           .eq('fc_id', fc_id);
 
         console.log('xxxxxxxxxx Check for Existing User Start xxxxxxxxxx');
-        console.log(`Exsiting User Length: ${existingUser.length}`);
+        console.log(`Exsiting User Length: ${existingUser?.length}`);
         console.log(`Existing Users: ${JSON.stringify(existingUser, null, 2)}`);
         console.log(`Error in Existing User: ${error}`);
         console.log('xxxxxxxxxx Check for Existing User End xxxxxxxxxx');
@@ -109,7 +107,7 @@ export const authOptions: NextAuthOptions = {
         console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
 
         // Insert new user
-        if (existingUser.length == 0) {
+        if (existingUser?.length == 0) {
           const { data: newUser, error } = await supabase
             .from('users')
             .insert([
@@ -128,7 +126,7 @@ export const authOptions: NextAuthOptions = {
           );
           console.log('New User:', newUser);
           console.log('Error:', error);
-          sc_user_id = newUser[0].id;
+          sc_user_id = newUser?.[0].id;
           console.log('sc_user_id_new:', sc_user_id);
           console.log('xxxxxxxxxx No Existing User Found - End xxxxxxxxxx');
           console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
@@ -136,7 +134,7 @@ export const authOptions: NextAuthOptions = {
         }
 
         // Update is_active=true & session_huddle_room_id=''
-        if (existingUser.length == 1) {
+        if (existingUser?.length == 1) {
           console.log('xxxxxxxxxx Existing User Found - Start xxxxxxxxxx');
           console.log('xxxxxxxxxx Existing User Found - Updating xxxxxxx');
           console.log('Exisitng User: ', existingUser);
