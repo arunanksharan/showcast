@@ -1,0 +1,12 @@
+.heroTitle {
+  transform: scaleY(1.3);
+  letter-spacing: -3px;
+  line-height: 0.85;
+  font-weight: bold;
+}
+
+.signInSubTitle {
+  transform: scaleY(1.3);
+  letter-spacing: -2px;
+  line-height: 0.8;
+}
