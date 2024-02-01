@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { supabase } from '../../../../utils/supabaseClient'; // Adjust the path as needed
 // import { getSession } from 'next-auth/react';
-import { getServerSession } from 'next-auth/next';
+// import { getServerSession } from 'next-auth/next';
 
 export default async function handler(
   req: NextApiRequest,
@@ -30,7 +30,7 @@ export default async function handler(
     console.log('Inside update room');
 
     // Update the room status in Supabase
-    const { error } = await supabase
+    const { error, data } = await supabase
       .from('rooms')
       .update({
         peer_is_joined: true,
@@ -49,6 +49,6 @@ export default async function handler(
     // Handle any other errors
     return res
       .status(500)
-      .json({ error: error.message || 'An unexpected error occurred' });
+      .json({ error: (error as any).message || 'An unexpected error occurred' });
   }
 }

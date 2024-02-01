@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "compile": "tsc --noEmit"
   },
   "dependencies": {
     "@farcaster/auth-kit": "^0.0.39",

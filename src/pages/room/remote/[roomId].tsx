@@ -112,7 +112,8 @@ export default function HostRoom({ token }: Props) {
     await leaveRoom();
     console.log('Session:');
     console.log(session);
-    const roomId = session.data?.user?.roomId;
+    const user = session.data?.user as User & DefaultSession['user'] & { roomId: string };
+    const roomId = user.roomId;
     console.log('RoomId:', roomId);
     router.push(`/room/host/${roomId}`);
   };
@@ -214,10 +215,11 @@ export default function HostRoom({ token }: Props) {
 
 import { GetServerSidePropsContext } from 'next';
 import { signOut } from 'next-auth/react';
-import { set } from '@project-serum/anchor/dist/cjs/utils/features';
+// import { set } from '@project-serum/anchor/dist/cjs/utils/features';
 import Image from 'next/image';
 import { getSession } from 'next-auth/react';
 import { useGlobalContext } from '@/src/context/GlobalContext';
+import { DefaultSession, User } from 'next-auth';
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   // session
