@@ -17,7 +17,7 @@ import { supabase } from '../../../utils/supabaseClient';
 import { useSession } from 'next-auth/react';
 import { GetServerSidePropsContext } from 'next';
 import { signOut } from 'next-auth/react';
-import { set } from '@project-serum/anchor/dist/cjs/utils/features';
+// import { set } from '@project-serum/anchor/dist/cjs/utils/features';
 import Image from 'next/image';
 import { getSession } from 'next-auth/react';
 import { useGlobalContext } from '@/src/context/GlobalContext';
