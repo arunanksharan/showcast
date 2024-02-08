@@ -14,10 +14,10 @@ const config = {
   // rpcUrl: 'https://mainnet.optimism.io',
   rpcUrl:
     'https://opt-mainnet.g.alchemy.com/v2/TcSIWI9vCZw_u6ztvDp0DC2UFl5pgxap',
-  domain: `${process.env['HOST']}`,
+  domain: `${process.env['NEXTAUTH_URL']}`,
   // siweUri: 'https://example.com/login',
   // domain: 'http://localhost:3000',
-  siweUri: `${process.env['HOST']}/login`,
+  siweUri: `${process.env['NEXTAUTH_URL']}/login`,
 };
 
 console.log('config', config);
