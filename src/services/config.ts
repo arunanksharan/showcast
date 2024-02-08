@@ -3,6 +3,19 @@ import * as crypto from 'crypto';
 
 const baseAppUrl = process.env.NEXT_PUBLIC_BASE_URL || '';
 
+export const farcasterConfig = {
+  // For a production app, replace this with an Optimism Mainnet
+  // RPC URL from a provider like Alchemy or Infura.
+  relay: 'https://relay.farcaster.xyz',
+  // rpcUrl: 'https://mainnet.optimism.io',
+  rpcUrl:
+    'https://opt-mainnet.g.alchemy.com/v2/TcSIWI9vCZw_u6ztvDp0DC2UFl5pgxap',
+  domain: baseAppUrl,
+  // siweUri: 'https://example.com/login',
+  // domain: 'http://localhost:3000',
+  siweUri: `${baseAppUrl}/login`,
+};
+
 console.log(
   'process.env.NEXT_PUBLIC_BASE_URL',
   process.env.NEXT_PUBLIC_BASE_URL
