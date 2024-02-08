@@ -14,10 +14,10 @@ const config = {
   // rpcUrl: 'https://mainnet.optimism.io',
   rpcUrl:
     'https://opt-mainnet.g.alchemy.com/v2/TcSIWI9vCZw_u6ztvDp0DC2UFl5pgxap',
-  domain: 'example.com',
+  domain: `${process.env['HOST']}`,
   // siweUri: 'https://example.com/login',
   // domain: 'http://localhost:3000',
-  siweUri: 'http://localhost:3000/login',
+  siweUri: `${process.env['HOST']}/login`,
 };
 
 import { HuddleClient, HuddleProvider } from '@huddle01/react';

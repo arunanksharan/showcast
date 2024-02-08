@@ -55,7 +55,7 @@ export const authOptions: NextAuthOptions = {
         const verifyResponse = await appClient.verifySignInMessage({
           message: credentials?.message as string,
           signature: credentials?.signature as `0x${string}`,
-          domain: 'example.com',
+          domain: `${process.env['HOST']}`,
           nonce: csrfToken,
         });
         const { success, fid } = verifyResponse;
