@@ -10,16 +10,20 @@ export const farcasterConfig = {
   // rpcUrl: 'https://mainnet.optimism.io',
   rpcUrl:
     'https://opt-mainnet.g.alchemy.com/v2/TcSIWI9vCZw_u6ztvDp0DC2UFl5pgxap',
-  domain: baseAppUrl,
+  // domain: baseAppUrl,
   // siweUri: 'https://example.com/login',
   // domain: 'http://localhost:3000',
-  siweUri: `${baseAppUrl}/login`,
+  // siweUri: `${baseAppUrl}/login`,
+  domain: 'https://showcast.vercel.app',
+  siweUri: 'https://showcast.vercel.app/login',
 };
 
 console.log(
   'process.env.NEXT_PUBLIC_BASE_URL',
   process.env.NEXT_PUBLIC_BASE_URL
 );
+
+console.log('farcasterConfig', farcasterConfig);
 
 /** Entire Cookies section has been disabled
  * ToDo: Enable cookies

@@ -48,6 +48,15 @@ export const authOptions: NextAuthOptions = {
           body: { csrfToken },
         } = req;
 
+        console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+        console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+        console.log('xxxxxxxxxx Authorize Function xxxxxxx');
+        console.log('domain url', `${process.env['NEXTAUTH_URL']}`);
+        console.log('csrfToken:', csrfToken);
+        console.log('domain url', `${process.env['NEXT_PUBLIC_BASE_URL']}`);
+        console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+        console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+
         const appClient = createAppClient({
           ethereum: viemConnector(),
         });
@@ -55,7 +64,8 @@ export const authOptions: NextAuthOptions = {
         const verifyResponse = await appClient.verifySignInMessage({
           message: credentials?.message as string,
           signature: credentials?.signature as `0x${string}`,
-          domain: `${process.env['NEXTAUTH_URL']}`,
+          // domain: `${process.env['NEXTAUTH_URL']}`,
+          domain: 'https://showcast.vercel.app',
           nonce: csrfToken,
         });
         const { success, fid } = verifyResponse;
