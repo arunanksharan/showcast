@@ -65,7 +65,7 @@ export const authOptions: NextAuthOptions = {
           message: credentials?.message as string,
           signature: credentials?.signature as `0x${string}`,
           // domain: `${process.env['NEXTAUTH_URL']}`,
-          domain: 'https://showcast.vercel.app',
+          domain: 'showcast.vercel.app',
           nonce: csrfToken,
         });
         const { success, fid } = verifyResponse;
