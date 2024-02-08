@@ -20,6 +20,8 @@ const config = {
   siweUri: `${process.env['HOST']}/login`,
 };
 
+console.log('config', config);
+
 import { HuddleClient, HuddleProvider } from '@huddle01/react';
 import { Room } from '@/types/room';
 
