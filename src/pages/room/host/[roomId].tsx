@@ -1,6 +1,3 @@
-import ChatBox from '../../../components/ChatBox/ChatBox';
-import RemotePeer from '../../../components/RemotePeer/RemotePeer';
-import { TPeerMetadata } from '../../../utils/types';
 import {
   useLocalAudio,
   useLocalPeer,
@@ -9,20 +6,18 @@ import {
   usePeerIds,
   useRoom,
 } from '@huddle01/react/hooks';
-import React from 'react';
-import { AccessToken, Role } from '@huddle01/server-sdk/auth';
+import { signOut, useSession } from 'next-auth/react';
 import { Inter } from 'next/font/google';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
-import { supabase } from '../../../utils/supabaseClient';
-import { useSession } from 'next-auth/react';
-import { GetServerSidePropsContext } from 'next';
-import { signOut } from 'next-auth/react';
+import RemotePeer from '../../../components/RemotePeer/RemotePeer';
+import { TPeerMetadata } from '../../../utils/types';
 // import { set } from '@project-serum/anchor/dist/cjs/utils/features';
 import Image from 'next/image';
-import { getSession } from 'next-auth/react';
 import { useGlobalContext } from '../../../context/GlobalContext';
-import ShowcastLoginBtn from '@/src/components/ShowcastLoginBtn';
+import { UserAvatar } from './UserAvatar';
+import { useProfile } from '@farcaster/auth-kit';
+import classNames from 'classnames';
 const inter = Inter({ subsets: ['latin'] });
 
 type Props = {
@@ -40,6 +35,8 @@ export default function HostRoom() {
   const [joinedAsPeer, setJoinedAsPeer] = useState<boolean>(false);
   const [peerJoined, setPeerJoined] = useState<boolean>(false);
   const { rooms, updateRooms } = useGlobalContext();
+
+  const { isAuthenticated } = useProfile();
   // const isLoading = useRef(false);
   // const [selectedPeerRoomId, setSelectedPeerRoomId] = useState<string>('');
 
@@ -151,88 +148,67 @@ export default function HostRoom() {
     await router.push(`/room/host/`);
   };
 
-  const handleSignOut = async () => {
-    await disableVideo();
-    await disableAudio();
-    // Update users and rooms table
-    const response = await fetch('/api/room/update/signOut', {
-      method: 'POST',
-      body: JSON.stringify({
-        userId: session.data?.user?.id,
-        roomId: router.query.roomId,
-      }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (response.ok) {
-      // Now sign out
-      console.log('Response from signOut', response);
-      signOut({ callbackUrl: 'http://localhost:3000/' });
-    } else {
-      // Handle any errors
-      console.error('Failed to update before signing out.');
-    }
-  };
-
   return (
     <main
-      className={`flex lg:h-screen h-auto min-h-screen flex-col items-center`}
+      className={`flex h-[calc(100vh-2rem)] w-[calc(100vw-2rem)] flex-col items-stretch p-4`}
     >
-      <div className="p-4">
-        <div className="mb-4 flex flex-row justify-between items-center py-2 rounded-2xl bg-hero-bg w-full">
-          <Image
-            src="/logo.svg"
-            alt="showcast logo"
-            width={202}
-            height={41}
-            className="ml-0 h-8 py-2"
-          />
-        </div>
-        <div className="flex-1 h-full w-full max-w-full max-h-max border relative">
-          {isVideoOn && (
-            <div className="rounded-xl max-w-full w-full h-full">
-              <video
-                ref={videoRef}
-                className="aspect-video rounded-xl max-w-full object-cover w-full h-full"
-                autoPlay
-                muted
-              />
-            </div>
-          )}
+      <div className="mb-4 py-3 flex flex-row justify-between items-center rounded-2xl bg-hero-bg w-full">
+        <Image
+          src="/logo.svg"
+          alt="showcast logo"
+          width={202}
+          height={41}
+          className="ml-0 h-6 py-2"
+        />
 
-          <div className=" grid gap-2 text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-            {peerIds.map((peerId) =>
-              peerId ? <RemotePeer key={peerId} peerId={peerId} /> : null
-            )}
+        <UserAvatar />
+      </div>
+      <div className="flex-1 h-full w-full max-w-full max-h-max border relative">
+        {isVideoOn && (
+          <div className="rounded-xl absolute h-full w-full ">
+            <video
+              ref={videoRef}
+              className={classNames(
+                "object-cover rounded-xl max-w-full w-full h-full",
+                state !== 'connected' && "animate-pulse"
+              )}
+              autoPlay
+              muted
+            />
           </div>
+        )}
+
+        <div className=" grid gap-2 text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
+          {peerIds.map((peerId) =>
+            peerId ? <RemotePeer key={peerId} peerId={peerId} /> : null
+          )}
         </div>
-        {/* {state === 'connected' && <ChatBox />} */}
-        <div className="flex flex-row m-4 fixed bottom-2">
-          {session && (
+      </div>
+      {/* {state === 'connected' && <ChatBox />} */}
+      <div className="flex flex-row md:fixed bottom-10 justify-center w-full left-0 mt-4">
+        {/* {session && (
+          <button
+            className="border-1 border-solid border-hero-bg text-white font-manrope py-2 px-8 rounded-full flex items-center justify-center bg-hero-bg hover:bg-white hover:text-purple-700 transition-all mx-4"
+            onClick={handleSignOut}
+          >
+            Sign Out
+          </button>
+        )} */}
+
+        {state === 'connected' && (
+          <>
             <button
-              className="bg-transparent border-1 border-solid border-white text-white font-manrope py-2 px-8 rounded-full flex items-center justify-center hover:bg-white hover:text-purple-700 transition-all mx-4"
-              onClick={handleSignOut}
+              type="button"
+              className="border-1 border-solid border-hero-bg bg-hero-bg text-white font-manrope py-2 px-8 rounded-full flex items-center justify-center hover:bg-hero-bg transition-all mx-4 cursor-pointer"
+              onClick={handleLeaveRoom}
             >
-              Sign Out
+              Leave
             </button>
-          )}
-          {state === 'connected' && (
-            <>
-              <button
-                type="button"
-                className="bg-transparent border-1 border-solid border-white text-white font-manrope py-2 px-8 rounded-full flex items-center justify-center hover:bg-white hover:text-purple-700 transition-all mx-4"
-                onClick={handleLeaveRoom}
-              >
-                Leave
-              </button>
-            </>
-          )}
-        </div>
+          </>
+        )}
       </div>
     </main>
   );
 }
 
-// UseEffect runs twice - isLoading ensures it is called once
+
