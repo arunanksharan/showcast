@@ -109,34 +109,33 @@
   dependencies:
     zod "^3.21.4"
 
-"@huddle01/react@^1.0.0-beta.15":
-  version "1.0.0-beta.15"
-  resolved "https://registry.npmjs.org/@huddle01/react/-/react-1.0.0-beta.15.tgz"
-  integrity sha512-DYOxB6d305DxGIkdljvHCafFOOAilpbcXfBOGsRf+7F7gvZO/n3ZAGdIhDDaZF/8N4gEhKqcwizAHyjblcen4Q==
+"@huddle01/react@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.npmjs.org/@huddle01/react/-/react-1.0.0.tgz"
+  integrity sha512-h7HL6bHWe30OUIcla1C/7hhFbmy5oBcwUAT+FVuBBE9qcaU8dzW3SUlSDFUQgAgVEtgVOfjO1bBjVb2F3A5fJQ==
   dependencies:
-    "@huddle01/web-core" "1.0.0-beta.15"
+    "@huddle01/web-core" "1.0.0"
     "@tanstack/react-query" "^4.32.6"
     "@testing-library/react" "^14.0.0"
     "@testing-library/react-hooks" "^8.0.1"
     axios "^1.5.1"
     react "18.2.0"
 
-"@huddle01/server-sdk@^1.0.0-beta.2":
-  version "1.0.0-beta.2"
-  resolved "https://registry.npmjs.org/@huddle01/server-sdk/-/server-sdk-1.0.0-beta.2.tgz"
-  integrity sha512-rcqkZ4+oC94TNXz41yI4c46YVxWbaLKT3NRmrLCcuhe8za4ZFRZz+j9vs2PHN3DhMYu3UBNEm1+wfgCyv/HDMw==
+"@huddle01/server-sdk@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.npmjs.org/@huddle01/server-sdk/-/server-sdk-1.0.0.tgz"
+  integrity sha512-ypCIea3XY9AfzUw3xje4tMqtuLdIAgErA9CQWWLOGAEBBbMVmRR28k5vOuIRuHLr/qR4C9PZq0Z4T0HbpuBdfQ==
   dependencies:
     axios "^1.5.1"
     jose "^4.14.6"
     zod "^3.22.4"
 
-"@huddle01/web-core@1.0.0-beta.15":
-  version "1.0.0-beta.15"
-  resolved "https://registry.npmjs.org/@huddle01/web-core/-/web-core-1.0.0-beta.15.tgz"
-  integrity sha512-sa5ggZtWE4YX+w2KshyhauHxAA1cgdZcOVMK396jHiaaHq2+IXGQKr/w/mjhShJfhDWYxzGSUnQUCLsyHgB9Ag==
+"@huddle01/web-core@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.npmjs.org/@huddle01/web-core/-/web-core-1.0.0.tgz"
+  integrity sha512-EEqFymzIVMaCSadFClE7N93X7y+gHpfcoshtyUvbT+rAB+bNKmUurvQFNVW8yanmYQOR931ZXRuyc5jZhKCBNA==
   dependencies:
     mediasoup-client "^3.7.2"
-    tslog "^4.9.1"
     zod "^3.22.1"
 
 "@humanwhocodes/config-array@^0.11.13":
@@ -3011,9 +3010,9 @@ scheduler@^0.23.0:
     loose-envify "^1.1.0"
 
 sdp-transform@^2.14.1:
-  version "2.14.1"
-  resolved "https://registry.npmjs.org/sdp-transform/-/sdp-transform-2.14.1.tgz"
-  integrity sha512-RjZyX3nVwJyCuTo5tGPx+PZWkDMCg7oOLpSlhjDdZfwUoNqG1mM8nyj31IGHyaPWXhjbP7cdK3qZ2bmkJ1GzRw==
+  version "2.14.2"
+  resolved "https://registry.npmjs.org/sdp-transform/-/sdp-transform-2.14.2.tgz"
+  integrity sha512-icY6jVao7MfKCieyo1AyxFYm1baiM+fA00qW/KrNNVlkxHAd34riEKuEkUe4bBb3gJwLJZM+xT60Yj1QL8rHiA==
 
 semver@^6.3.1:
   version "6.3.1"
@@ -3346,11 +3345,6 @@ tslib@2.4.0:
   version "2.4.0"
   resolved "https://registry.npmjs.org/tslib/-/tslib-2.4.0.tgz"
   integrity sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==
-
-tslog@^4.9.1:
-  version "4.9.2"
-  resolved "https://registry.npmjs.org/tslog/-/tslog-4.9.2.tgz"
-  integrity sha512-wBM+LRJoNl34Bdu8mYEFxpvmOUedpNUwMNQB/NcuPIZKwdDde6xLHUev3bBjXQU7gdurX++X/YE7gLH8eXYsiQ==
 
 type-check@^0.4.0, type-check@~0.4.0:
   version "0.4.0"
