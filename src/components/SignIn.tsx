@@ -111,17 +111,18 @@ function SignIn() {
           alt="showcast logo"
           width={202}
           height={41}
-          className="lg:ml-10 mx-auto"
+          className="lg:ml-10 mx-auto h-8 py-2"
         />
 
         <ShowcastLoginBtn
           nonce={getNonce}
           onSuccess={handleSuccess}
           onError={() => setError(true)}
+          className="mr-3 lg:block hidden"
         />
       </div>
-      <div className="flex flex-1 lg:flex-row lg:w-full">
-        <div className="w-full flex-1 lg:w-1/2 lg:bg-slate-500 mx-3 mt-2 mb-4 rounded-3xl">
+      <div className="lg:flex flex-1 lg:flex-row lg:w-full">
+        <div className="w-full flex-1 lg:w-1/2 lg:bg-slate-500 mx-3 mt-2 mb-4 rounded-3xl max-w-fit lg:max-h-full max-h-[30vh] overflow-hidden">
           <video
             ref={videoRef}
             autoPlay
@@ -130,15 +131,15 @@ function SignIn() {
             style={{ width: "100%", height: "100%", objectFit: "cover" }}
           />
         </div>
-        <div className="w-full lg:w-1/2 flex flex-col flex-1 lg:ml-2 lg:mr-4 mt-2 mb-4 justify-center items-center bg-signin-content-bg rounded-xl">
-          <div className="px-12 relative">
+        <div className="w-full lg:w-1/2 flex flex-col flex-1 lg:ml-2 lg:mr-4 mt-2 lg:mb-4 justify-center items-center bg-signin-content-bg rounded-xl">
+          <div className="lg:max-w-md lg:px-0 p-4 px-4 relative">
             <div
               className={`font-mona lg:text-3xl text-xl font-black uppercase text-black lg:mb-4`}
             >
               Welcome to Showcast
             </div>
             <div
-              className={`font-mona lg:pt-4 pt-5 pb-6 font-black uppercase text-hero-bg lg:text-7xl text-4xl`}
+              className={`font-mona lg:pt-4 py-2 font-black uppercase text-hero-bg lg:text-7xl text-5xl`}
             >
               Ready to Meet
               <br />
@@ -168,7 +169,7 @@ function SignIn() {
               </div>
             </div>
             <hr className="opacity-30" />
-            <div className="font-manrope font-light text-gray-500 text-sm">
+            <div className="font-manrope font-light text-gray-500 text-sm mb-8">
               Signing up for a Showcast account means you agree to the{" "}
               <Link
                 className="no-underline outline-none text-black font-medium"
@@ -190,6 +191,8 @@ function SignIn() {
               nonce={getNonce}
               onSuccess={handleSuccess}
               onError={() => setError(true)}
+              fullWidth
+              className="sticky lg:relative bottom-4"
             />
           </div>
         </div>

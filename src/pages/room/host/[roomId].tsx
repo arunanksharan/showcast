@@ -22,6 +22,7 @@ import { signOut } from 'next-auth/react';
 import Image from 'next/image';
 import { getSession } from 'next-auth/react';
 import { useGlobalContext } from '../../../context/GlobalContext';
+import ShowcastLoginBtn from '@/src/components/ShowcastLoginBtn';
 const inter = Inter({ subsets: ['latin'] });
 
 type Props = {
@@ -177,24 +178,29 @@ export default function HostRoom() {
 
   return (
     <main
-      className={`flex min-h-screen flex-col items-center p-4 ${inter.className}`}
+      className={`flex lg:h-screen h-auto min-h-screen flex-col items-center`}
     >
-      <div className="w-full flex gap-4 justify-between items-stretch">
-        <div className="flex-1 justify-between items-center flex flex-row">
-          <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700/10 after:dark:from-sky-900 after:dark:via-[#0141ff]/40 before:lg:h-[360px]">
-            <div className="relative flex gap-2">
-              {isVideoOn && (
-                <div className="rounded-xl">
-                  <video
-                    ref={videoRef}
-                    className="aspect-video rounded-xl"
-                    autoPlay
-                    muted
-                  />
-                </div>
-              )}
+      <div className="p-4">
+        <div className="mb-4 flex flex-row justify-between items-center py-2 rounded-2xl bg-hero-bg w-full">
+          <Image
+            src="/logo.svg"
+            alt="showcast logo"
+            width={202}
+            height={41}
+            className="ml-0 h-8 py-2"
+          />
+        </div>
+        <div className="flex-1 h-full w-full max-w-full max-h-max border relative">
+          {isVideoOn && (
+            <div className="rounded-xl max-w-full w-full h-full">
+              <video
+                ref={videoRef}
+                className="aspect-video rounded-xl max-w-full object-cover w-full h-full"
+                autoPlay
+                muted
+              />
             </div>
-          </div>
+          )}
 
           <div className=" grid gap-2 text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
             {peerIds.map((peerId) =>
@@ -203,27 +209,27 @@ export default function HostRoom() {
           </div>
         </div>
         {/* {state === 'connected' && <ChatBox />} */}
-      </div>
-      <div className="flex flex-row m-4">
-        {session && (
-          <button
-            className="bg-transparent border-1 border-solid border-white text-white font-manrope py-2 px-8 rounded-full flex items-center justify-center hover:bg-white hover:text-purple-700 transition-all mx-4"
-            onClick={handleSignOut}
-          >
-            Sign Out
-          </button>
-        )}
-        {state === 'connected' && (
-          <>
+        <div className="flex flex-row m-4 fixed bottom-2">
+          {session && (
             <button
-              type="button"
               className="bg-transparent border-1 border-solid border-white text-white font-manrope py-2 px-8 rounded-full flex items-center justify-center hover:bg-white hover:text-purple-700 transition-all mx-4"
-              onClick={handleLeaveRoom}
+              onClick={handleSignOut}
             >
-              Leave
+              Sign Out
             </button>
-          </>
-        )}
+          )}
+          {state === 'connected' && (
+            <>
+              <button
+                type="button"
+                className="bg-transparent border-1 border-solid border-white text-white font-manrope py-2 px-8 rounded-full flex items-center justify-center hover:bg-white hover:text-purple-700 transition-all mx-4"
+                onClick={handleLeaveRoom}
+              >
+                Leave
+              </button>
+            </>
+          )}
+        </div>
       </div>
     </main>
   );
