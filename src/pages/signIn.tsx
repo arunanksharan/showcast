@@ -1,4 +1,5 @@
 import '@farcaster/auth-kit/styles.css';
+import React from 'react';
 
 import Head from 'next/head';
 import SignIn from '../components/SignIn';
