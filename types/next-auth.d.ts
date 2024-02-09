@@ -1,6 +1,6 @@
 import NextAuth from 'next-auth';
 import { DefaultSession, DefaultUser } from 'next-auth';
-import { JWT } from 'next-auth/jwt';
+import { JWT, DefaultJWT } from 'next-auth/jwt';
 
 // ToDo: Extend User, token and session object to handle custom fields.
 declare module 'next-auth' {

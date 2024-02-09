@@ -9,6 +9,7 @@ import {
   usePeerIds,
   useRoom,
 } from '@huddle01/react/hooks';
+import React from 'react';
 import { AccessToken, Role } from '@huddle01/server-sdk/auth';
 import { Inter } from 'next/font/google';
 import { useRouter } from 'next/router';
@@ -20,7 +21,7 @@ import { signOut } from 'next-auth/react';
 // import { set } from '@project-serum/anchor/dist/cjs/utils/features';
 import Image from 'next/image';
 import { getSession } from 'next-auth/react';
-import { useGlobalContext } from '@/src/context/GlobalContext';
+import { useGlobalContext } from '../../../context/GlobalContext';
 const inter = Inter({ subsets: ['latin'] });
 
 type Props = {

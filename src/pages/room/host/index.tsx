@@ -2,7 +2,8 @@
 import { useEffect } from 'react';
 import { GetServerSideProps, NextPage } from 'next';
 import { getSession } from 'next-auth/react';
-import { supabase } from '@/src/utils/supabaseClient';
+import { supabase } from '../../../utils/supabaseClient';
+import React from 'react';
 
 const RoomPage = () => {
   return <p>We are preparing your room...</p>;
