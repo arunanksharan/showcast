@@ -122,9 +122,9 @@ export default function HostRoom({ token }: Props) {
     <main
       className={`flex min-h-screen flex-col items-center p-4 ${inter.className}`}
     >
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
+      <div className="z-10 max-w-5xl w-full items-center justify-between font-mona text-sm lg:flex">
         <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          <code className="font-mono font-bold text-red-500">{state}</code>
+          <code className="font-mona font-bold text-red-500">{state}</code>
         </p>
         <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
           {state === 'connected' && (
@@ -188,7 +188,7 @@ export default function HostRoom({ token }: Props) {
       {/* <UserProfile /> */}
       {/* <div>List of Online Users</div>
       {rooms.map((user) => (
-        <div className="m-5 flex flex-row font-urbanist" key={user.id}>
+        <div className="m-5 flex flex-row font-mona" key={user.id}>
           <div className="bg-blue-500 px-10 py-10 text-white">
             {user.fc_username}
           </div>

@@ -19,7 +19,7 @@ module.exports = {
       },
       fontFamily: {
         urbanist: ['Urbanist', 'sans-serif'],
-        mona: ['"Mona Sans Condensed"', 'sans-serif'],
+        mona: ['var(--font-mona)'],
         manrope: ['Manrope', 'sans-serif'],
       },
       lineHeight: {

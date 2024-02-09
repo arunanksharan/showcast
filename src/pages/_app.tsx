@@ -10,6 +10,7 @@ import { farcasterConfig } from '../services/config';
 import React from 'react';
 
 import { HuddleClient, HuddleProvider } from '@huddle01/react';
+import { monaFont } from '../font/fonts';
 // import { Room } from '@/types/room';
 
 const huddleClient = new HuddleClient({
@@ -27,23 +28,25 @@ export default function App({
 }: AppProps) {
   // console.log('AuthKitProvider config', config);
   return (
-    <GlobalContextProvider>
-      <SessionProvider session={session}>
-        <HuddleProvider client={huddleClient}>
-          <AuthKitProvider config={farcasterConfig}>
-            {session && (
-              <button
-                onClick={() =>
-                  signOut({ callbackUrl: 'http://localhost:3000/' })
-                }
-              >
-                Sign Out
-              </button>
-            )}
-            <Component {...pageProps} />
-          </AuthKitProvider>
-        </HuddleProvider>
-      </SessionProvider>
-    </GlobalContextProvider>
+    <div className={monaFont.variable}>
+      <GlobalContextProvider>
+        <SessionProvider session={session}>
+          <HuddleProvider client={huddleClient}>
+            <AuthKitProvider config={farcasterConfig}>
+              {session && (
+                <button
+                  onClick={() =>
+                    signOut({ callbackUrl: 'http://localhost:3000/' })
+                  }
+                >
+                  Sign Out
+                </button>
+              )}
+              <Component {...pageProps} />
+            </AuthKitProvider>
+          </HuddleProvider>
+        </SessionProvider>
+      </GlobalContextProvider>
+    </div>
   );
 }

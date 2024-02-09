@@ -21,7 +21,7 @@ export default function Home() {
           priority
           className="bg-hero-bg absolute w-full h-full"
         />
-        <div className="HeroContentContainer relative bottom-10 inline-flex font-urbanist text-white">
+        <div className="HeroContentContainer relative bottom-10 inline-flex font-mona text-white">
           <div className="flex flex-col justify-between items-center">
             <Image
               src="/logo.svg"
@@ -30,12 +30,11 @@ export default function Home() {
               height={41}
               className="mb-20"
             />
-            <div className={`text-6xl mt-10 font-mona font-black uppercase text-center ${styles.heroTitle}`}>
+            <div className={`md:text-8xl text-6xl mt-10 font-mona font-black uppercase text-center`}>
               EVERY FACE IS<br></br>A NEW STORY
             </div>
-            <div className="text-xl mt-10 font-manrope text-center font-medium">
+            <div className="md:text-xl text-md mt-2 font-manrope text-center max-w-md px-4">
               Experience the Joy of One-on-One
-              <br />
               Conversations with Strangers.
             </div>
 
