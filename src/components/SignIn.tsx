@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useCallback, useState } from "react";
 import { useSession, signIn, getCsrfToken } from "next-auth/react";
-import { SignInButton, StatusAPIResponse } from "@farcaster/auth-kit";
+import { StatusAPIResponse } from "@farcaster/auth-kit";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import Link from "next/link";
 import styles from "../../styles/Common.module.css";
+import ShowcastLoginBtn from "./ShowcastLoginBtn";
 
 function SignIn() {
   const [error, setError] = useState(false);
@@ -104,7 +105,7 @@ function SignIn() {
 
   return (
     <div className="flex flex-col w-full h-screen bg-white lg:m-0 lg:p-0">
-      <div className="Nav mx-2 mt-4 mb-2 flex flex-row justify-between items-center bg-hero-bg py-2 rounded-2xl">
+      <div className="mx-2 mt-4 mb-2 flex flex-row justify-between items-center bg-hero-bg py-2 rounded-2xl">
         <Image
           src="/logo.svg"
           alt="showcast logo"
@@ -113,15 +114,13 @@ function SignIn() {
           className="lg:ml-10 mx-auto"
         />
 
-        <div className="Button px-5 py-2 bg-white bg-opacity-10 rounded-xl justify-center items-center gap-1 lg:flex hidden mr-20">
-          <SignInButton
-            nonce={getNonce}
-            onSuccess={handleSuccess}
-            onError={() => setError(true)}
-          />
-        </div>
+        <ShowcastLoginBtn
+          nonce={getNonce}
+          onSuccess={handleSuccess}
+          onError={() => setError(true)}
+        />
       </div>
-      <div className="ImageAndContent flex flex-1 lg:flex-row lg:w-full mt-2">
+      <div className="flex flex-1 lg:flex-row lg:w-full">
         <div className="w-full flex-1 lg:w-1/2 lg:bg-slate-500 mx-3 mt-2 mb-4 rounded-3xl">
           <video
             ref={videoRef}
@@ -132,44 +131,44 @@ function SignIn() {
           />
         </div>
         <div className="w-full lg:w-1/2 flex flex-col flex-1 lg:ml-2 lg:mr-4 mt-2 mb-4 justify-center items-center bg-signin-content-bg rounded-xl">
-          <div className="lg:m-16 lg:p-8 relative">
+          <div className="px-12 relative">
             <div
-              className={`font-mona lg:text-3xl text-xl font-black uppercase text-black lg:mb-4 ${styles.signInSubTitle}`}
+              className={`font-mona lg:text-3xl text-xl font-black uppercase text-black lg:mb-4`}
             >
               Welcome to Showcast
             </div>
             <div
-              className={`font-mona lg:pt-4 lg:pb-6 pt-5 pb-6 font-black uppercase text-hero-bg lg:text-6xl text-4xl ${styles.signInSubTitle}`}
+              className={`font-mona lg:pt-4 pt-5 pb-6 font-black uppercase text-hero-bg lg:text-7xl text-4xl`}
             >
               Ready to Meet
               <br />
               Farcaster Frens?
             </div>
             <hr className="opacity-30" />
-            <div>
-              <p className="font-manrope font-thin">
+            <div className="text-sm grid gap-2 my-4">
+              <div className="font-manrope font-thin">
                 <span className="font-medium">1. Age Limit:</span> Must be 18+
                 or 13+ with parental consent
-              </p>
-              <p className="font-manrope font-thin">
+              </div>
+              <div className="font-manrope font-thin">
                 <span className="font-medium">2. Content Alert:</span> May
                 encounter adult or offensive content
-              </p>
-              <p className="font-manrope font-thin">
+              </div>
+              <div className="font-manrope font-thin">
                 <span className="font-medium">3. Respect Others:</span> No
                 harassment or discrimination tolerated
-              </p>
-              <p className="font-manrope font-thin">
+              </div>
+              <div className="font-manrope font-thin">
                 <span className="font-medium">4. Protect Privacy:</span> Avoid
                 sharing personal info
-              </p>
-              <p className="font-manrope font-thin">
+              </div>
+              <div className="font-manrope font-thin">
                 <span className="font-medium">5. Use at Own Risk:</span> Not
                 liable for user interactions
-              </p>
+              </div>
             </div>
             <hr className="opacity-30" />
-            <div className="font-manrope font-light text-gray-500">
+            <div className="font-manrope font-light text-gray-500 text-sm">
               Signing up for a Showcast account means you agree to the{" "}
               <Link
                 className="no-underline outline-none text-black font-medium"
@@ -186,13 +185,12 @@ function SignIn() {
               </Link>
               .
             </div>
-            <div className="mt-4 px-10 py-4 bg-hero-bg flex flex-row justify-center text-white font-manrope rounded-xl">
-              <SignInButton
-                nonce={getNonce}
-                onSuccess={handleSuccess}
-                onError={() => setError(true)}
-              />
-            </div>
+
+            <ShowcastLoginBtn
+              nonce={getNonce}
+              onSuccess={handleSuccess}
+              onError={() => setError(true)}
+            />
           </div>
         </div>
       </div>

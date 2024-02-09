@@ -6,15 +6,25 @@
 @tailwind utilities;
 
 body {
-    background-color: #855DCD; /* Set this to the specific black you're using */
-    padding: 0;
-    margin: 0;
-  }
+  background-color: #855DCD; /* Set this to the specific black you're using */
+  padding: 0;
+  margin: 0;
+}
 
-  @font-face {
-    font-family: 'Mona Sans';
-    src: url('/fonts/MonaSansCondensed-Black.woff2') format('woff2');
-         
-    font-weight: normal;
-    font-style: normal;
-  }
+@font-face {
+  font-family: 'Mona Sans';
+  src: url('/fonts/MonaSansCondensed-Black.woff2') format('woff2');
+        
+  font-weight: normal;
+  font-style: normal;
+}
+
+.showcast-login-btn button {
+  background-color: #855DCD !important;
+}
+
+.showcast-login-btn button span{
+  font-size: 14px;
+  font-weight: 400;
+  font-family: 'Manrope', sans-serif;
+}
