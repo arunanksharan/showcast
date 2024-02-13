@@ -91,38 +91,7 @@ export default function HostRoom() {
 
   // Every time roomId changes, join the room
   useEffect(() => {
-    const join = async () => {
-      // isLoading.current = true;
-      console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
-      console.log('Inside useEffect - joinRoom - first time');
-      console.log('107 RoomId:', roomId);
-      console.log('108 State: ', state);
-      console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
 
-      // Get Access Token for the room
-      console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
-      console.log('113 Inside useEffect - getAccessToken');
-      const response = await fetch('/api/room/getAccessToken', {
-        method: 'POST',
-        body: JSON.stringify({ roomId }),
-        headers: {
-          'Content-Type': 'application/json',
-          'Cache-Control': 'no-cache',
-        },
-      });
-      const data = await response.json();
-      console.log('122 Data from getAccessToken', data);
-      console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
-      console.log('124 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
-      //   const token = await data.token;
-
-      await joinRoom({
-        roomId,
-        token: data.token,
-      });
-      await enableVideo();
-      await enableAudio();
-    };
     join();
   }, [router.query]); // roomId
 
@@ -138,6 +107,40 @@ export default function HostRoom() {
       screenRef.current.srcObject = shareStream;
     }
   }, [shareStream]);
+
+  const join = async () => {
+    if (!roomId) return;
+    // isLoading.current = true;
+    console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+    console.log('Inside useEffect - joinRoom - first time');
+    console.log('107 RoomId:', roomId);
+    console.log('108 State: ', state);
+    console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+
+    // Get Access Token for the room
+    console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+    console.log('113 Inside useEffect - getAccessToken');
+    const response = await fetch('/api/room/getAccessToken', {
+      method: 'POST',
+      body: JSON.stringify({ roomId }),
+      headers: {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-cache',
+      },
+    });
+    const data = await response.json();
+    console.log('122 Data from getAccessToken', data);
+    console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+    console.log('124 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+    //   const token = await data.token;
+
+    await joinRoom({
+      roomId,
+      token: data.token,
+    });
+    await enableVideo();
+    await enableAudio();
+  };
 
   const handleLeaveRoom = async () => {
     await updateRoomStatusOnLeave();
@@ -165,12 +168,17 @@ export default function HostRoom() {
       </div>
       <div className="flex-1 h-full w-full max-w-full max-h-max border relative">
         {isVideoOn && (
-          <div className="rounded-xl absolute h-full w-full ">
+          <div className={classNames(
+            "rounded-xl absolute",
+            !peerIds.length && "h-full w-full",
+            peerIds.length && "bottom-4 right-4 h-36 w-auto z-10"
+          )}>
             <video
               ref={videoRef}
               className={classNames(
                 "object-cover rounded-xl max-w-full w-full h-full",
-                state !== 'connected' && "animate-pulse"
+                state !== 'connected' && "animate-pulse",
+                // peerIds.length && "aspect-video"
               )}
               autoPlay
               muted
@@ -178,11 +186,13 @@ export default function HostRoom() {
           </div>
         )}
 
-        <div className=" grid gap-2 text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-          {peerIds.map((peerId) =>
+
+        <div className="rounded-xl absolute h-full w-full ">
+          {/* {peerIds.map((peerId) =>
             peerId ? <RemotePeer key={peerId} peerId={peerId} /> : null
-          )}
+          )} */}
         </div>
+
       </div>
       {/* {state === 'connected' && <ChatBox />} */}
       <div className="flex flex-row md:fixed bottom-10 justify-center w-full left-0 mt-4">
