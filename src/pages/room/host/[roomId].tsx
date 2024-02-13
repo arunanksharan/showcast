@@ -188,9 +188,9 @@ export default function HostRoom() {
 
 
         <div className="rounded-xl absolute h-full w-full ">
-          {/* {peerIds.map((peerId) =>
+          {peerIds.map((peerId) =>
             peerId ? <RemotePeer key={peerId} peerId={peerId} /> : null
-          )} */}
+          )}
         </div>
 
       </div>
