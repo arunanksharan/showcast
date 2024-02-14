@@ -14,8 +14,8 @@ export const farcasterConfig = {
   // siweUri: 'https://example.com/login',
   // domain: 'http://localhost:3000',
   // siweUri: `${baseAppUrl}/login`,
-  domain: 'showcast.vercel.app',
-  siweUri: 'https://showcast.vercel.app/login',
+  domain: 'cast.show',
+  siweUri: 'https://cast.show/login',
 };
 
 console.log(
