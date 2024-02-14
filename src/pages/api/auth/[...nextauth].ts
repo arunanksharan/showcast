@@ -44,7 +44,7 @@ export const authOptions: NextAuthOptions = {
         },
       },
       async authorize(credentials, req) {
-       const csrfToken = req.body?.csrfToken;
+        const csrfToken = req.body?.csrfToken;
 
         console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
         console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
@@ -63,7 +63,8 @@ export const authOptions: NextAuthOptions = {
           message: credentials?.message as string,
           signature: credentials?.signature as `0x${string}`,
           // domain: `${process.env['NEXTAUTH_URL']}`,
-          domain: 'showcast.vercel.app',
+
+          domain: 'https://showcast.vercel.app',
           nonce: csrfToken,
         });
         const { success, fid } = verifyResponse;
